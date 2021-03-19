@@ -4,8 +4,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useDispatch, useSelector } from "react-redux";
 import { getCampaignDetails } from "../store/actions/campaign";
 import { useHistory } from "react-router-dom";
-import { Doughnut } from 'react-chartjs-2'
 import Cardwrap from '../component/cardwrap';
+import Chart from "../component/Chart"
 import '../index.css'
 
 var dataImp = [0]
@@ -16,6 +16,32 @@ var numInc = 0
 //Note:Local storage variables
 const locId = localStorage.getItem('id');
 const locName = localStorage.getItem('name');
+
+const template = {
+  userConfig: {
+    tooltip: {
+      pointFormat: "<b>{point.y}</b>"
+    },
+    plotOptions: {
+      pie: {
+        showInLegend: true,
+        innerSize: "60%",
+        dataLabels: {
+          enabled: true,
+          formatter() {
+            return this.point.name  + ' : ' + Math.round(this.point.y * 100);
+          },
+          distance: 5,
+          color: "black",
+          style: {
+            fontweight: "bold",
+            fontsize: 50
+          }
+        }
+      }
+    }
+  }
+};
 
 const Dashboard = (props) => {
   const campaignId = props.location.campaigns === undefined ? locId : props.location.campaigns.id;
@@ -95,7 +121,6 @@ const Dashboard = (props) => {
       return 0;
     }
   }
-
   const totalCalculateCtr = () => {
     if (calculateCtr(data.impressions, data.clicks) > 0) {
       dataCtr.push(calculateCtr(data.impressions, data.clicks))
@@ -105,8 +130,7 @@ const Dashboard = (props) => {
     }, 0);
     return sum;
   }
-  const totalImp = (data) => {
-    console.log(data)
+  const totalImp = () => {
     if (data.impressions) { dataImp.push(data.impressions) };
     var sum = dataImp.reduce(function (prev, curr) {
       return curr + prev;
@@ -127,11 +151,32 @@ const Dashboard = (props) => {
     }, 0);
     return sum;
   }
+  const getChartData = () => {
+    let tempData = [];
+    if (data) {
+       tempData = [
+        { name: "Total impressions", y: totalImp() },
+        { name: "Total clicks", y: totalClicks() },
+        { name: "Total users", y: totalUsers() },
+        { name: "Total CTR", y: totalCalculateCtr() },
+        { name: "Most impressions", y: data.impressions },
+        { name: "Most clicks", y: data.clicks },
+        { name: "Most users", y: data.users },
+        { name: "CTR", y: calculateCtr(data.impressions,data.clicks) },
+      ];
+    }
+    return tempData;
+  }
   return (
     <>
-    <h1 className="title">{campaignName}</h1>
+    <Chart
+                  data={getChartData()}
+                  userConfig={template.userConfig}
+                  titleName={campaignName}
+                  currentNumber={numInc}
+                />
     <div className="container-block">
-      <Cardwrap text="Total impressions" value={totalImp(data)} />
+      <Cardwrap text="Total impressions" value={totalImp()} />
       <Cardwrap text="Total click" value={totalClicks()} />
       <Cardwrap text="Total CTR" value={totalCalculateCtr()} />
       <Cardwrap text="Total users" value={totalUsers()} />
