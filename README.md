@@ -4,7 +4,7 @@
 *******Step for Run Project********
 
 ## 1. Download project from github
-## 2. Install node module in server folder ==> npm init
-## 3. Install node module in test folder ==> npm init
+## 2. Install node module in server folder ==> npm install
+## 3. Install node module in test folder ==> npm install
 ## 4. Start server ==> node app.js
 ## 5. Run project ==> npm start 
