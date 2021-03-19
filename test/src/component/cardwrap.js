@@ -9,6 +9,7 @@ const useStyles = makeStyles((theme) => ({
         flexWrap: 'wrap',
         backgroundColor: theme.palette.background.paper,
         borderRadius: '10px',
+        marginTop: '10px',
         // NOTE: Media query for different screen size
         [theme.breakpoints.down('sm')]: {
             width: '100%',
@@ -33,7 +34,6 @@ const useStyles = makeStyles((theme) => ({
     cardContent: {
         width: '100%',
         textAlign: 'center',
-        backgroundColor: '#198794d1',
     },
     h5: {
         fontSize: '1.2rem',
@@ -45,13 +45,13 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const Cardwrap = ({ text, value }) => {
+const Cardwrap = ({ text, value, style }) => {
     const classes = useStyles();
     return (
         <div className={classes.root}>
             <div className={classes.row}>
                 {/* Note: Material Ui components */}
-                <Card className={classes.root} variant="outlined">
+                <Card className={classes.root} variant="outlined" style={style}>
                     <CardContent className={classes.cardContent}>
                         <Typography className={classes.h5} >
                             {text}

@@ -3,7 +3,7 @@ import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 
 function Chart(props) {
-// class Chart extends Component {
+  // class Chart extends Component {
   const state = {
     chartData: {
       chart: {
@@ -13,15 +13,15 @@ function Chart(props) {
       title: {
         text: props.titleName,
         style: {
-            fontSize: 40,
-            fontWeight: "bold",
-            color: "#000000"
-          },
+          fontSize: 40,
+          fontWeight: "bold",
+          color: "#000000"
+        },
       },
       subtitle: {
         text:
           (
-           'Performance <br>' + props.currentNumber
+            'Performance <br>' + props.currentNumber
           ),
         floating: true,
         style: {
@@ -40,15 +40,15 @@ function Chart(props) {
     }
   };
 
-    return (
-      <>
-        <HighchartsReact
-          highcharts={Highcharts}
-          options={state.chartData}
-        />
-      </>
-    );
-  
+  return (
+    <>
+      <HighchartsReact
+        highcharts={Highcharts}
+        options={state.chartData}
+      />
+    </>
+  );
+
 }
 
 export default Chart;

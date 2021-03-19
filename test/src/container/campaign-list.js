@@ -13,9 +13,9 @@ function CampaignList() {
         const fetchData = async () => {
             const result = await fetch(api_url).then(response => {
                 return response.json()
-            }) .catch(err => {
+            }).catch(err => {
                 throw new Error(err)
-              })
+            })
             setData(result)
         }
         fetchData()
@@ -46,14 +46,14 @@ function CampaignList() {
                                     </Link>
                                 </td>
                                 <td> <Link
-                                        className=""
-                                        to={{
-                                            pathname: "/dashboard",
-                                            campaigns
-                                        }}
-                                    >
-                                        {campaigns.name}
-                                    </Link></td>
+                                    className=""
+                                    to={{
+                                        pathname: "/dashboard",
+                                        campaigns
+                                    }}
+                                >
+                                    {campaigns.name}
+                                </Link></td>
                             </tr>
                         )
                     })}

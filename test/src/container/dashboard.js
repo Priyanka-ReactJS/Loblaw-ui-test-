@@ -29,7 +29,7 @@ const template = {
         dataLabels: {
           enabled: true,
           formatter() {
-            return this.point.name  + ' : ' + Math.round(this.point.y * 100);
+            return this.point.name + ' : ' + Math.round(this.point.y * 100);
           },
           distance: 5,
           color: "black",
@@ -47,6 +47,10 @@ const Dashboard = (props) => {
   const campaignId = props.location.campaigns === undefined ? locId : props.location.campaigns.id;
   const campaignName = props.location.campaigns === undefined ? locName : props.location.campaigns.name;
   let api_url = "http://localhost:4000/campaigns";
+
+  {/*/ Note: Implemented Redux too in Application for state management for reference , 
+  haven't used redux store to fetch and store data but I have my hands on it and 
+  I find it easy to manage state in a single place and keep changes in app more traceable./*/}
 
   //Note: Using redux-store for state management
   // const campaign = props.location.campaigns;
@@ -68,13 +72,13 @@ const Dashboard = (props) => {
       ApiUrlForSearch = api_url + '/' + campaignId + '?number=' + num;
       if (locId !== null && locId !== 'null') {
         ApiUrlForSearch = api_url + '/' + locId + '?number=' + num;
-      }  else if (campaignId !== null && campaignId !== 'null') {
+      } else if (campaignId !== null && campaignId !== 'null') {
         ApiUrlForSearch = api_url + '/' + campaignId + '?number=' + num;
       } else {
         //Note: Redirect on main page when campaignId Or Loalstorage Id is not found
         history.push('/')
       }
-      if(ApiUrlForSearch !== ''){
+      if (ApiUrlForSearch !== '') {
         const result = await fetch(ApiUrlForSearch).then(response => {
           return response.json()
         }).catch(err => {
@@ -95,23 +99,23 @@ const Dashboard = (props) => {
 
   useEffect(() => {
     //Note: Store Data in Local storage
-    if(props.location.campaigns === undefined) {
-      if(locId !== null && locId !== 'null') {
-        window.localStorage.setItem("id",locId)
+    if (props.location.campaigns === undefined) {
+      if (locId !== null && locId !== 'null') {
+        window.localStorage.setItem("id", locId)
       }
     } else {
       window.localStorage.setItem("id", props.location.campaigns.id)
     }
     //Note: Handle page refresh scenario
-    if(props.location.campaigns === undefined) {
-      if(locName !== null && locName !== 'null') {
-        window.localStorage.setItem("name",locName)
+    if (props.location.campaigns === undefined) {
+      if (locName !== null && locName !== 'null') {
+        window.localStorage.setItem("name", locName)
       }
     } else {
       window.localStorage.setItem("name", props.location.campaigns.name)
     }
   }, [locId, locName, props.location.campaigns])
-
+  // write a function for count CTR
   const calculateCtr = (impressions, clicks) => {
     if (impressions && clicks) {
       return (
@@ -121,6 +125,7 @@ const Dashboard = (props) => {
       return 0;
     }
   }
+  // write a function for count total CTR
   const totalCalculateCtr = () => {
     if (calculateCtr(data.impressions, data.clicks) > 0) {
       dataCtr.push(calculateCtr(data.impressions, data.clicks))
@@ -130,6 +135,7 @@ const Dashboard = (props) => {
     }, 0);
     return sum;
   }
+  // write a function for count total Impressions
   const totalImp = () => {
     if (data.impressions) { dataImp.push(data.impressions) };
     var sum = dataImp.reduce(function (prev, curr) {
@@ -137,6 +143,7 @@ const Dashboard = (props) => {
     }, 0);
     return sum;
   }
+  // write a function for count total clicks
   const totalClicks = () => {
     if (data.clicks) { dataClicks.push(data.clicks) };
     var sum = dataClicks.reduce(function (prev, curr) {
@@ -144,6 +151,7 @@ const Dashboard = (props) => {
     }, 0);
     return sum;
   }
+  // write a function for count total users
   const totalUsers = () => {
     if (data.users) { dataUsers.push(data.users) };
     var sum = dataUsers.reduce(function (prev, curr) {
@@ -151,41 +159,43 @@ const Dashboard = (props) => {
     }, 0);
     return sum;
   }
+  // write a function for chart's data and chart's lables
   const getChartData = () => {
     let tempData = [];
     if (data) {
-       tempData = [
+      tempData = [
         { name: "Total impressions", y: totalImp() },
         { name: "Total clicks", y: totalClicks() },
         { name: "Total users", y: totalUsers() },
         { name: "Total CTR", y: totalCalculateCtr() },
-        { name: "Most impressions", y: data.impressions },
-        { name: "Most clicks", y: data.clicks },
-        { name: "Most users", y: data.users },
-        { name: "CTR", y: calculateCtr(data.impressions,data.clicks) },
+        { name: "Recent impressions", y: data.impressions },
+        { name: "Recent clicks", y: data.clicks },
+        { name: "Recent users", y: data.users },
+        { name: "Recent CTR", y: calculateCtr(data.impressions, data.clicks) },
       ];
     }
     return tempData;
   }
   return (
     <>
-    <Chart
-                  data={getChartData()}
-                  userConfig={template.userConfig}
-                  titleName={campaignName}
-                  currentNumber={numInc}
-                />
-    <div className="container-block">
-      <Cardwrap text="Total impressions" value={totalImp()} />
-      <Cardwrap text="Total click" value={totalClicks()} />
-      <Cardwrap text="Total CTR" value={totalCalculateCtr()} />
-      <Cardwrap text="Total users" value={totalUsers()} />
-      <Cardwrap text="Most recent impressions" value={data.impressions} />
-      <Cardwrap text="Current Number" value={numInc} />
-      <Cardwrap text="Most recent clicks" value={data.clicks} />
-      <Cardwrap text="Most recent CTR" value={calculateCtr(data.impressions, data.clicks)} />
-      <Cardwrap text="Most recent users" value={data.users} /> 
-    </div>
+      <Chart
+        data={getChartData()}
+        userConfig={template.userConfig}
+        titleName={campaignName}
+        currentNumber={numInc}
+      />
+      <div className="container-block">
+        {/*use reusable component with inline css for dynamic color" */}
+        <Cardwrap style={{ backgroundColor: "rgb(124, 181, 236)" }} text="Total impressions" value={totalImp()} />
+        <Cardwrap style={{ backgroundColor: "rgb(67, 67, 72)" }} text="Total click" value={totalClicks()} />
+        <Cardwrap style={{ backgroundColor: "rgb(247, 163, 92)" }} text="Total CTR" value={totalCalculateCtr()} />
+        <Cardwrap style={{ backgroundColor: "rgb(144, 237, 125)" }} text="Total users" value={totalUsers()} />
+        <Cardwrap style={{ backgroundColor: "rgb(128, 133, 233)" }} text="Most recent impressions" value={data.impressions} />
+        <Cardwrap style={{ backgroundColor: "rgb(124, 181, 236)" }} text="Current Number" value={numInc} />
+        <Cardwrap style={{ backgroundColor: "rgb(241, 92, 128)" }} text="Most recent clicks" value={data.clicks} />
+        <Cardwrap style={{ backgroundColor: "rgb(43, 144, 143)" }} text="Most recent CTR" value={calculateCtr(data.impressions, data.clicks)} />
+        <Cardwrap style={{ backgroundColor: "rgb(228, 211, 84)" }} text="Most recent users" value={data.users} />
+      </div>
     </>
   );
 }

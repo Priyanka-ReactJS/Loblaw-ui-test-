@@ -5,11 +5,11 @@ import CampaignList from './container/campaign-list';
 
 
 function App() {
-  
+
 
   return (
     <div>
-     <CampaignList/>
+      <CampaignList />
     </div>
   );
 }
